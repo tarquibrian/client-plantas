@@ -1,28 +1,53 @@
-import React, { Fragment } from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import "../styles/about.css";
 
-export const About = () => (
-  <Fragment>
-    <div className="row">
-      <h3>Informacion</h3>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-        consequuntur, animi modi aperiam eos doloribus error temporibus ducimus,
-        odio aut cum numquam dolore minus tempora quibusdam hic provident beatae
-        totam dignissimos placeat tenetur nisi minima voluptatum! Quae
-        voluptatum qui deleniti incidunt fuga, delectus eius quam soluta ipsa
-        dolorem alias inventore, ad dolor mollitia eum fugit, rem ex! Aperiam
-        excepturi, quo consectetur sapiente possimus vero nisi perferendis
-        dolore voluptate doloribus quidem distinctio sint, architecto provident
-        repellendus quod odio animi. Magnam eius, eligendi, veritatis dolor,
-        incidunt culpa harum tenetur suscipit tempora sequi non ab. Mollitia
-        fugiat expedita molestiae quae. Repellendus ad ab fugiat deleniti
-        aspernatur, facilis necessitatibus officiis, hic expedita saepe quae
-        distinctio eligendi fugit at, cumque illo molestias suscipit!
-        Reiciendis, nihil eaque quis pariatur repellendus, illum consequatur,
-        unde cumque vero natus ipsum! Distinctio nesciunt possimus quibusdam
-        amet quaerat sapiente eius cumque fuga doloremque illo quos odit
-        tempora, vero est omnis esse.
-      </p>
+import planta_img from "../assets/planta.jpg";
+import { Link } from "react-router-dom";
+
+const init = {
+  nombre_planta: "",
+  nombre_cientifico: "",
+  propiedades: "",
+  descripcion: "",
+  conociemiento_ancestral: "",
+  imagen: "",
+};
+
+const API = process.env.REACT_APP_API;
+
+export const About = () => {
+  const [plantas, setPlantas] = useState([init]);
+
+  useEffect(() => {
+    getPlantas();
+  }, []);
+
+  const getPlantas = async () => {
+    const result = await axios.get(`${API}/Plantas_medicinales`);
+    setPlantas(result.data);
+  };
+
+  console.log(plantas)
+
+  return (
+    <div className="grid-container">
+      {plantas.map((planta, index) => (
+        <div className="grid-card" key={index}>
+          <img
+            className="card-img"
+            src={planta_img}
+            alt={planta.nombre_planta}
+          />
+          <div className="card-content">
+            <h1 className="card-name">{planta.nombre_planta}</h1>
+            <h3 className="card-name-scientific">{planta.nombre_cientifico}</h3>
+            <Link to={`/planta_medicinal/${planta._id}`}>
+              <button className="card-button">CONOCER</button>
+            </Link>
+          </div>
+        </div>
+      ))}
     </div>
-  </Fragment>
-);
+  );
+};

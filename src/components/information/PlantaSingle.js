@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import "../../styles/about.css";
 const API = process.env.REACT_APP_API;
 export const PlantaSingle = () => {
   const [planta, setPlanta] = useState({});
@@ -35,6 +36,9 @@ export const PlantaSingle = () => {
           conocimiento ancestral: <br /> {planta.conocimiento_ancestral}
         </h3>
       </div>
+      <Link to={"/About"}>
+        <button className="btn btn-info">ATRAS</button>
+      </Link>
     </>
   );
 };

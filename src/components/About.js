@@ -5,19 +5,11 @@ import "../styles/about.css";
 import planta_img from "../assets/planta.jpg";
 import { Link } from "react-router-dom";
 
-const init = {
-  nombre_planta: "",
-  nombre_cientifico: "",
-  propiedades: "",
-  descripcion: "",
-  conociemiento_ancestral: "",
-  imagen: "",
-};
 
 const API = process.env.REACT_APP_API;
 
 export const About = () => {
-  const [plantas, setPlantas] = useState([init]);
+  const [plantas, setPlantas] = useState([]);
 
   useEffect(() => {
     getPlantas();

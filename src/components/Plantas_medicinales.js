@@ -1,70 +1,60 @@
+import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 
 const API = process.env.REACT_APP_API;
 
 export const Plantas_medicinales = () => {
+  const [nombre_cientifico, setNombre_cientifico] = useState("");
+  const [nombre_planta, setNombre_planta] = useState("");
+  const [propiedades, setPropiedades] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [conocimiento_ancestral, setConocimiento_ancestral] = useState("");
+  const [imagen, setImagen] = useState("");
+  const [latitud, setLatitud] = useState("");
+  const [longitud, setLongitud] = useState("");
 
-  const [nombre_cientifico, setNombre_cientifico] = useState('');
-  const [nombre_planta, setNombre_planta] = useState('');
-  const [propiedades, setPropiedades] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [conocimiento_ancestral, setConocimiento_ancestral] = useState('');
-  const [imagen, setImagen] = useState('');
-  const [latitud, setLatitud] = useState('');
-  const [longitud, setLongitud] = useState('');
-
-
-  const [editing, setEditing] = useState(false)
-  const [id, setId] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [id, setId] = useState("");
 
   const nameInput = useRef(null);
 
   let [Plantas_medicinales, setPlantas_medicinales] = useState([]);
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        //console.log(API)
-        if (!editing) {
-          const res = await fetch(`${API}/Plantas_medicinales`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              //'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-              nombre_cientifico,
-              nombre_planta,
-              propiedades,
-              descripcion,
-              conocimiento_ancestral,
-              imagen,
-              latitud,
-              longitud
-            }),
-          });
-          const data = await res.json();
-          console.log(data)
-          await getPlantas_medicinales();
-    
-          setNombre_cientifico('');
-          setNombre_planta('');
-          setPropiedades('');
-          setDescripcion('');
-          setConocimiento_ancestral('');
-          setImagen('');
-          setLatitud('');
-          setLongitud('');
-      
-    } 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    //console.log(API)
+    if (!editing) {
+      const res = await fetch(`${API}/Plantas_medicinales`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          //'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre_cientifico,
+          nombre_planta,
+          propiedades,
+          descripcion,
+          conocimiento_ancestral,
+          imagen,
+          latitud,
+          longitud,
+        }),
+      });
+      const data = await res.json();
+      console.log(data);
+      await getPlantas_medicinales();
 
-
-  else {
-    const res = await fetch(`${API}/Plantas_medicinales/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+      setNombre_cientifico("");
+      setNombre_planta("");
+      setPropiedades("");
+      setDescripcion("");
+      setConocimiento_ancestral("");
+      setImagen("");
+      setLatitud("");
+      setLongitud("");
+    } else {
+      const res = await axios.put(`${API}/Plantas_medicinales/${id}`, {
         nombre_cientifico,
         nombre_planta,
         propiedades,
@@ -72,27 +62,25 @@ export const Plantas_medicinales = () => {
         conocimiento_ancestral,
         imagen,
         latitud,
-        longitud
-      }),
-    });
-    const data = await res.json();
-    console.log(data);
-    setEditing(false);
-    setId("");
-  }
-  await getPlantas_medicinales();
+        longitud,
+      });
 
-    setNombre_cientifico('');
-    setNombre_planta('');
-    setPropiedades('');
-    setDescripcion('');
-    setConocimiento_ancestral('');
-    setImagen('');
-    setLatitud('');
-    setLongitud('');
-  nameInput.current.focus();
-};
+      console.log(res);
+      setEditing(false);
+      setId("");
+    }
+    await getPlantas_medicinales();
 
+    setNombre_cientifico("");
+    setNombre_planta("");
+    setPropiedades("");
+    setDescripcion("");
+    setConocimiento_ancestral("");
+    setImagen("");
+    setLatitud("");
+    setLongitud("");
+    nameInput.current.focus();
+  };
 
   const getPlantas_medicinales = async () => {
     const res = await fetch(`${API}/Plantas_medicinales`);
@@ -101,7 +89,9 @@ export const Plantas_medicinales = () => {
   };
 
   const deletePlantas_medicinales = async (id) => {
-    const PlantaResponse = window.confirm("¿Está seguro de que desea eliminarlo?");
+    const PlantaResponse = window.confirm(
+      "¿Está seguro de que desea eliminarlo?"
+    );
     if (PlantaResponse) {
       const res = await fetch(`${API}/Plantas_medicinales/${id}`, {
         method: "DELETE",
@@ -113,11 +103,14 @@ export const Plantas_medicinales = () => {
   };
 
   const editPlantas_medicinale = async (id) => {
-    const res = await fetch(`${API}/Plantas_medicinale/${id}`);
-    const data = await res.json(); //lo convertimos en un json
+    // const res = await fetch(`${API}/Plantas_medicinale/${id}`);
+    const res = await axios.get(`${API}/Plantas_medicinale/${id}`);
+    console.log(res.data);
+    // const data = await res.json(); //lo convertimos en un json
+    const data = res.data;
 
     setEditing(true);
-    setId(id)
+    setId(id);
 
     // Reset
     setNombre_cientifico(data.nombre_cientifico);
@@ -125,7 +118,7 @@ export const Plantas_medicinales = () => {
     setPropiedades(data.propiedades);
     setDescripcion(data.descripcion);
     setConocimiento_ancestral(data.conocimiento_ancestral);
-    setImagen(data.imagen);
+    // setImagen(data.imagen);
     setLatitud(data.latitud);
     setLongitud(data.longitud);
 
@@ -212,7 +205,7 @@ export const Plantas_medicinales = () => {
             />
           </div>
 
-          <div className="form-group" >
+          <div className="form-group">
             <input
               type="file"
               name="imagen"
@@ -221,10 +214,8 @@ export const Plantas_medicinales = () => {
               value={imagen}
               className="form-control"
               placeholder="Imagen"
-
-            /> 
-            <input type="submit"/>
-
+            />
+            <input type="submit" />
           </div>
 
           <button className="btn btn-primary btn-block">
@@ -248,7 +239,6 @@ export const Plantas_medicinales = () => {
             </tr>
           </thead>
           <tbody>
-            
             {Plantas_medicinales.map((Plantas_medicinale) => (
               <tr key={Plantas_medicinale._id}>
                 <td>{Plantas_medicinale.nombre_cientifico}</td>
@@ -262,13 +252,17 @@ export const Plantas_medicinales = () => {
                 <td>
                   <button
                     className="btn btn-secondary btn-sm btn-block"
-                    onClick={(e) => editPlantas_medicinale(Plantas_medicinale._id)}
+                    onClick={(e) =>
+                      editPlantas_medicinale(Plantas_medicinale._id)
+                    }
                   >
                     Editar
                   </button>
                   <button
                     className="btn btn-danger btn-sm btn-block"
-                    onClick={(e) => deletePlantas_medicinales(Plantas_medicinale._id)}
+                    onClick={(e) =>
+                      deletePlantas_medicinales(Plantas_medicinale._id)
+                    }
                   >
                     Eliminar
                   </button>

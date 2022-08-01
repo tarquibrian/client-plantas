@@ -15,7 +15,6 @@ export const PlantaSingle = () => {
   const getPlanta = async () => {
     const result = await axios.get(`${API}/Plantas_medicinale/` + path);
     setPlanta(result.data);
-    console.log(result.data);
   };
   return (
     <>

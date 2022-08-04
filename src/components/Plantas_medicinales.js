@@ -32,17 +32,19 @@ export const Plantas_medicinales = () => {
 
   // const [nombre_cientifico, nombre_planta, propiedades, descripcion, conocimiento_ancestral, latitud, longitud] = formValues;
 
+  const [imagenAnt, setImagenAnt] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     //console.log(API)
+    const data = new FormData();
+    const filename = Date.now() + imagen.name;
+    console.log("nombre de la imagen", filename);
+    data.append("name", filename);
+    data.append("file", imagen);
+    formValues.photo = filename;
     if (!editing) {
       if (imagen) {
-        const data = new FormData();
-        const filename = Date.now() + imagen.name;
-        console.log("nombre de la imagen", filename);
-        data.append("name", filename);
-        data.append("file", imagen);
-        formValues.photo = filename;
         try {
           console.log(data);
           await axios.post(`${API}/upload`, data);
@@ -61,44 +63,19 @@ export const Plantas_medicinales = () => {
         }
         console.log("data", data);
       }
-
-      // const res = await fetch(`${API}/Plantas_medicinales`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     //'Accept': 'application/json'
-      //   },
-      //   body: JSON.stringify({
-      //     nombre_cientifico,
-      //     nombre_planta,
-      //     propiedades,
-      //     descripcion,
-      //     conocimiento_ancestral,
-      //     // imagen,
-      //     latitud,
-      //     longitud,
-      //   }),
-      // });
-      // const data = await res.json();
-      // console.log(data);
-      // await getPlantas_medicinales();
-
-      // setNombre_cientifico("");
-      // setNombre_planta("");
-      // setPropiedades("");
-      // setDescripcion("");
-      // setConocimiento_ancestral("");
-      // setImagen("");
-      // setLatitud("");
-      // setLongitud("");
     } else {
+      console.log(imagenAnt);
+      await fetch(`${API}/delete/${imagenAnt}`, {
+        method: "DELETE",
+      });
+      await axios.post(`${API}/upload`, data);
       const res = await axios.put(`${API}/Plantas_medicinales/${id}`, {
         nombre_cientifico,
         nombre_planta,
         propiedades,
         descripcion,
         conocimiento_ancestral,
-        imagen,
+        imagen: imagen.name,
         latitud,
         longitud,
       });
@@ -115,6 +92,7 @@ export const Plantas_medicinales = () => {
     setDescripcion("");
     setConocimiento_ancestral("");
     setImagen(null);
+    setImagenAnt("");
     setLatitud("");
     setLongitud("");
     nameInput.current.focus();
@@ -135,10 +113,41 @@ export const Plantas_medicinales = () => {
       const res = await fetch(`${API}/Plantas_medicinales/${id}`, {
         method: "DELETE",
       });
+
       const data = await res.json();
       console.log(data);
       await getPlantas_medicinales();
+
+      console.log(imagen);
     }
+    // await axios
+    //   .delete(`${API}/delete`, { imagen: "planta9.jpg" })
+    //   .then((response) => {
+    //     console.log(response);
+    //   })
+    //   .catch(function (err) {
+    //     console.log(err);
+    //   });
+  };
+  const delete_imagen = async (imagen) => {
+    const res = await fetch(`${API}/delete/${imagen}`, {
+      method: "DELETE",
+    });
+
+    const data = await res.json();
+    console.log(data);
+    await getPlantas_medicinales();
+
+    console.log(imagen);
+
+    // await axios
+    //   .delete(`${API}/delete`, { imagen: "planta9.jpg" })
+    //   .then((response) => {
+    //     console.log(response);
+    //   })
+    //   .catch(function (err) {
+    //     console.log(err);
+    //   });
   };
 
   const editPlantas_medicinale = async (id) => {
@@ -157,7 +166,8 @@ export const Plantas_medicinales = () => {
     setPropiedades(data.propiedades);
     setDescripcion(data.descripcion);
     setConocimiento_ancestral(data.conocimiento_ancestral);
-    // setImagen(data.imagen);
+    setImagen(data.imagen);
+    setImagenAnt(data.imagen);
     setLatitud(data.latitud);
     setLongitud(data.longitud);
 
@@ -309,9 +319,10 @@ export const Plantas_medicinales = () => {
                   </button>
                   <button
                     className="btn btn-danger btn-sm btn-block"
-                    onClick={(e) =>
-                      deletePlantas_medicinales(Plantas_medicinale._id)
-                    }
+                    onClick={(e) => {
+                      deletePlantas_medicinales(Plantas_medicinale._id);
+                      delete_imagen(Plantas_medicinale.imagen);
+                    }}
                   >
                     Eliminar
                   </button>

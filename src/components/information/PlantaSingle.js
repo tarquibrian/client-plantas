@@ -18,21 +18,28 @@ export const PlantaSingle = () => {
   };
   return (
     <>
-      <div className="container">
-        <h1>
-          nombre: <br /> {planta.nombre_planta}
-        </h1>
-        <h3>
-          nombre cientifico: <br /> {planta.nombre_cientifico}
+      <div>
+        <img
+          className="planta-img"
+          src={process.env.REACT_APP_API + "/file/" + planta.imagen}
+          alt="img"
+        />
+      </div>
+      <div className="container mt-4 mb-4">
+        <h3 className="planta-title">
+          nombre de la planta: <span>{planta.nombre_planta}</span>
         </h3>
         <h3>
-          propiedades: <br /> {planta.propiedades}
+          nombre cientifico: <span>{planta.nombre_cientifico}</span>
         </h3>
         <h3>
-          descripcion: <br /> {planta.descripcion}
+          propiedades: <span>{planta.propiedades}</span>
         </h3>
         <h3>
-          conocimiento ancestral: <br /> {planta.conocimiento_ancestral}
+          descripcion: <span>{planta.descripcion}</span>
+        </h3>
+        <h3>
+          conocimiento ancestral: <span>{planta.conocimiento_ancestral}</span>
         </h3>
       </div>
       <Link to={"/About"}>

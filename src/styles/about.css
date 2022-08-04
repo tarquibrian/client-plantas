@@ -41,3 +41,15 @@
   bottom: 1rem;
     border: 1px solid darkgrey;
 }
+
+.planta-img {
+  display: flex;
+  width: 900px;
+  height: 600px;
+  object-fit: cover;
+}
+
+span {
+  font-size: 2rem;
+  color: rgb(20, 20, 20);
+}

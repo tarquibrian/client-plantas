@@ -2,8 +2,8 @@ import L from 'leaflet'
 //mostrar el icono elegido, entrando a la direccion donde se encuentra
 
 export const IconLocation = L.icon({
-    iconUrl: require('./logo/arrayan.JPG'),
-    iconRetinaUrl: require('./logo/arrayan.JPG'),
+    iconUrl: require('./logo/log.png'),
+    iconRetinaUrl: require('./logo/log.png'),
     iconAnchor: null,
     shadowUrl: null,
     shadowSize: null,
@@ -11,10 +11,3 @@ export const IconLocation = L.icon({
     iconSize: [50, 50],
     className: "leaflet-venue-icon",
 });
-
-
-
-const DB_foto = {
-    foto: 'hola',
-    contenido: 'sdkfjslkdnknsnb/ksldhs1r3233lklkhkh'
-}

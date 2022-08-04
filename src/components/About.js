@@ -28,7 +28,7 @@ export const About = () => {
         <div className="grid-card" key={index}>
           <img
             className="card-img"
-            src={planta_img}
+            src={API + '/file/' + planta.imagen}
             alt={planta.nombre_planta}
           />
           <div className="card-content">

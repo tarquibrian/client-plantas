@@ -2,14 +2,21 @@ import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 
 const API = process.env.REACT_APP_API;
-
+const init = {
+  nombre_cientifico: "",
+  nombre_planta: "",
+  propiedades: "",
+  descripcion: "",
+  conocimiento_ancestral: "",
+  latitud: "",
+  longitud: "",
+};
 export const Plantas_medicinales = () => {
   const [nombre_cientifico, setNombre_cientifico] = useState("");
   const [nombre_planta, setNombre_planta] = useState("");
   const [propiedades, setPropiedades] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [conocimiento_ancestral, setConocimiento_ancestral] = useState("");
-  const [imagen, setImagen] = useState("");
   const [latitud, setLatitud] = useState("");
   const [longitud, setLongitud] = useState("");
 
@@ -19,40 +26,71 @@ export const Plantas_medicinales = () => {
   const nameInput = useRef(null);
 
   let [Plantas_medicinales, setPlantas_medicinales] = useState([]);
+  const [imagen, setImagen] = useState(null);
+
+  const [formValues, setFormValues] = useState(init);
+
+  // const [nombre_cientifico, nombre_planta, propiedades, descripcion, conocimiento_ancestral, latitud, longitud] = formValues;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     //console.log(API)
     if (!editing) {
-      const res = await fetch(`${API}/Plantas_medicinales`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          //'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          nombre_cientifico,
-          nombre_planta,
-          propiedades,
-          descripcion,
-          conocimiento_ancestral,
-          imagen,
-          latitud,
-          longitud,
-        }),
-      });
-      const data = await res.json();
-      console.log(data);
-      await getPlantas_medicinales();
+      if (imagen) {
+        const data = new FormData();
+        const filename = Date.now() + imagen.name;
+        console.log("nombre de la imagen", filename);
+        data.append("name", filename);
+        data.append("file", imagen);
+        formValues.photo = filename;
+        try {
+          console.log(data);
+          await axios.post(`${API}/upload`, data);
+          await axios.post(`${API}/Plantas_medicinales`, {
+            nombre_cientifico,
+            nombre_planta,
+            propiedades,
+            descripcion,
+            conocimiento_ancestral,
+            imagen: imagen.name,
+            latitud,
+            longitud,
+          });
+        } catch (err) {
+          console.log("ERROR", err);
+        }
+        console.log("data", data);
+      }
 
-      setNombre_cientifico("");
-      setNombre_planta("");
-      setPropiedades("");
-      setDescripcion("");
-      setConocimiento_ancestral("");
-      setImagen("");
-      setLatitud("");
-      setLongitud("");
+      // const res = await fetch(`${API}/Plantas_medicinales`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     //'Accept': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     nombre_cientifico,
+      //     nombre_planta,
+      //     propiedades,
+      //     descripcion,
+      //     conocimiento_ancestral,
+      //     // imagen,
+      //     latitud,
+      //     longitud,
+      //   }),
+      // });
+      // const data = await res.json();
+      // console.log(data);
+      // await getPlantas_medicinales();
+
+      // setNombre_cientifico("");
+      // setNombre_planta("");
+      // setPropiedades("");
+      // setDescripcion("");
+      // setConocimiento_ancestral("");
+      // setImagen("");
+      // setLatitud("");
+      // setLongitud("");
     } else {
       const res = await axios.put(`${API}/Plantas_medicinales/${id}`, {
         nombre_cientifico,
@@ -76,7 +114,7 @@ export const Plantas_medicinales = () => {
     setPropiedades("");
     setDescripcion("");
     setConocimiento_ancestral("");
-    setImagen("");
+    setImagen(null);
     setLatitud("");
     setLongitud("");
     nameInput.current.focus();
@@ -85,6 +123,7 @@ export const Plantas_medicinales = () => {
   const getPlantas_medicinales = async () => {
     const res = await fetch(`${API}/Plantas_medicinales`);
     const data = await res.json();
+    console.log(Plantas_medicinales);
     setPlantas_medicinales(data);
   };
 
@@ -123,6 +162,13 @@ export const Plantas_medicinales = () => {
     setLongitud(data.longitud);
 
     nameInput.current.focus();
+  };
+
+  const handleInpudChage = ({ target }) => {
+    setFormValues({
+      ...formValues,
+      [target.name]: target.value,
+    });
   };
 
   useEffect(() => {
@@ -208,19 +254,22 @@ export const Plantas_medicinales = () => {
           <div className="form-group">
             <input
               type="file"
-              name="imagen"
-              accept=".JPG .MOV .jpg .png"
-              onChange={(e) => setImagen(e.target.value)}
-              value={imagen}
+              name="file"
               className="form-control"
+              onChange={(e) => setImagen(e.target.files[0])}
+              accept="image/*"
               placeholder="Imagen"
             />
-            <input type="submit" />
+            <div className="mt-3">
+              {editing ? (
+                <button className="btn btn-primary btn-block">
+                  ACTUALIZAR
+                </button>
+              ) : (
+                <input type="submit" className="btn btn-primary btn-block" />
+              )}
+            </div>
           </div>
-
-          <button className="btn btn-primary btn-block">
-            {editing ? "Actualizar" : "Crear"}
-          </button>
         </form>
       </div>
       <div className="col-md-2">

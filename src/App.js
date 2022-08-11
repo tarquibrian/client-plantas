@@ -22,16 +22,20 @@ function App() {
         <Navbar />
         <Switch>
           <div className="container p-4">
+
+            <Route path="/Login" component={Login} />
             <Route path="/Users" component={Users} />
 
             <Route path="/About" component={About} />
-            <Route path="/planta_medicinal/:plantaId" component={PlantaSingle} />
+            <Route
+              path="/planta_medicinal/:plantaId"
+              component={PlantaSingle}
+            />
             <Route
               path="/Plantas_medicinales"
               component={Plantas_medicinales}
             />
             <Route path="/Geolocalizacion" component={Geolocalizacion} />
-            <Route path="/Login" component={Login} />
           </div>
         </Switch>
       </Router>

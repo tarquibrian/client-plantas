@@ -115,8 +115,7 @@ export function Login() {
           </div>
 
           <div className="d-grid gap col-6 mx-auto">
-            <h1></h1>
-            <h1></h1>
+            
             <button
               className="btn btn-primary btn-block"
               block="true"
